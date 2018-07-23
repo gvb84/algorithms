@@ -64,7 +64,7 @@ class SipHash:
         mi = b << 56  # encode length in LSB
         w <<= 3  # offset in 64-bit values
         for i in range(0, (b % 8)):
-            mi |= (m[w-8+i] << (i << 3))
+            mi |= (m[b-(b % 8)+i] << (i << 3))
         v3 ^= mi
         for j in range(self.c):
             v0, v1, v2, v3 = SipRound(v0, v1, v2, v3)
