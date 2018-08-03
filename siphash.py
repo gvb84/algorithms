@@ -42,6 +42,9 @@ class SipHash:
         self.c = 2
         self.d = 4
 
+    def __repr__(self):
+        return "SipHash-%i-%i" % (self.c, self.d)
+
     def __call__(self, m, k):
         assert len(k) == 16
 
