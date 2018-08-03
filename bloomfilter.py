@@ -50,7 +50,7 @@ class CountingBloomFilter(set):
         self.c = 0
 
         self.count_array = bytearray(self.m)
-        self.hasher = SipHash()
+        self.hasher = SipHash(2, 4)
         self.hash_key = bytearray(16)
 
     def __len__(self):
@@ -64,7 +64,7 @@ class CountingBloomFilter(set):
         return True
 
     def __repr__(self):
-        return "BloomFilter <k:%i, m:%i, n:%i, p:%.8f>" % \
+        return "CountingBloomFilter <k:%i, m:%i, n:%i, p:%.8f>" % \
                (self.k, self.m, self.n, self.p)
 
     def hash(self, data):
@@ -79,14 +79,20 @@ class CountingBloomFilter(set):
     def additem(self, item):
         for i, h in enumerate(self.hash(item)):
             off = h + (i * self.o)
-            self.count_array[off] += 1
+            try:
+                self.count_array[off] += 1
+            except ValueError:
+                return False
         self.c += 1
 
     def delitem(self, item):
+        if item not in self:
+            return False
         for i, h in enumerate(self.hash(item)):
             off = h + (i * self.o)
             self.count_array[off] -= 1
         self.c -= 1
+        return True
 
 
 if __name__ == "__main__":
